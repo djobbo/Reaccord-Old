@@ -1,0 +1,13 @@
+{
+	"include": ["./src/**/*"],
+	"compilerOptions": {
+		"strict": true,
+		"esModuleInterop": true,
+		"lib": ["esnext"],
+		"jsx": "react-jsx",
+		"outDir": "lib",
+		"declaration": true,
+
+		"noImplicitAny": false // TODO
+	}
+}

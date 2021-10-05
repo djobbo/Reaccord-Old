@@ -1,0 +1,17 @@
+{
+	"name": "reaccord",
+	"private": true,
+	"version": "1.0.0",
+	"main": "index.js",
+	"license": "MIT",
+	"workspaces": [
+		"packages/*",
+		"example"
+	],
+	"scripts": {
+		"dev": "lerna run dev --parallel"
+	},
+	"devDependencies": {
+		"lerna": "^4.0.0"
+	}
+}
