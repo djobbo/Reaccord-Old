@@ -1,10 +1,9 @@
-import { ButtonStyle } from 'discord-api-types';
 import { Client } from 'discord.js';
 import { ReactNode } from 'react';
 import ReactReconciler, { HostConfig } from 'react-reconciler';
 
 export const parseTextNode = (el): string => {
-	if (!el) return '';
+	if (typeof el === 'undefined' || el === null) return '';
 
 	if (Array.isArray(el)) return parseTextNodeGroup(el);
 
@@ -24,12 +23,18 @@ export const parseTextNode = (el): string => {
 	}
 };
 
-type NotifyFunction = (message: unknown) => Promise<void>;
+interface MessageContent {
+	embeds: unknown[];
+	components: unknown[];
+	text: { content: string };
+}
+
+type NotifyFunction = (message: MessageContent) => Promise<void>;
 
 export interface Container {
 	client?: Client | null;
 	notify?: NotifyFunction;
-	content: { embeds: unknown[]; components: unknown[]; text: string };
+	content: MessageContent;
 }
 
 const parseTextNodeGroup = (els): string =>
@@ -74,14 +79,13 @@ const hostConfig: Partial<
 		container?.notify(container.content);
 	},
 	shouldSetTextContent: (type) =>
-		['Text', 'Title', 'Field', 'Button'].includes(type),
+		['Text', 'Title', 'Field', 'Button', 'LinkButton'].includes(type),
 	createInstance: (type, props, rootContainer) => {
 		switch (type) {
 			case 'Text':
 				return {
 					type,
-					text: '',
-					...props,
+					text: { content: parseTextNode(props.children) },
 				};
 			case 'Embed':
 				return {
@@ -95,17 +99,13 @@ const hostConfig: Partial<
 				};
 			case 'Button':
 				if (props.onClick) {
-					console.log('click');
-
 					rootContainer.client?.on(
 						'interactionCreate',
 						(interaction) => {
-							console.log({ interaction });
 							if (!interaction.isButton()) return;
 							if (interaction.customId !== props.customId) return;
 							props.onClick?.(interaction);
-							interaction.reply('.');
-							interaction.deleteReply();
+							interaction.deferUpdate();
 						}
 					);
 				}
@@ -127,7 +127,7 @@ const hostConfig: Partial<
 		container = {
 			client: container.client,
 			notify: container.notify,
-			content: { embeds: [], components: [], text: '' },
+			content: { embeds: [], components: [], text: { content: '' } },
 		};
 	},
 	finalizeInitialChildren: () => false, // if true -> commitMount method
@@ -150,16 +150,25 @@ const hostConfig: Partial<
 
 			case 'Button':
 				parentInstance.components.push({
-					type: 2,
+					type: 'BUTTON',
+					emoji: child.emoji,
+					label: parseTextNode(child.children),
+					disabled: child.disabled ?? false,
+					custom_id: child.customId,
+					options: child.options ?? [],
+					style: getButtonStyle(child.style ?? 'Primary'),
+				});
+				break;
+
+			case 'LinkButton':
+				parentInstance.components.push({
+					type: 'BUTTON',
 					emoji: child.emoji,
 					label: parseTextNode(child.children),
 					url: child.href,
 					disabled: child.disabled ?? false,
-					custom_id: child.customId,
 					options: child.options ?? [],
-					style: getButtonStyle(
-						child.style ?? (child.url ? 'Link' : 'Primary')
-					),
+					style: getButtonStyle('Link'),
 				});
 				break;
 
@@ -184,16 +193,25 @@ const hostConfig: Partial<
 
 			case 'Button':
 				parentInstance.components.push({
-					type: 2,
+					type: 'BUTTON',
+					emoji: child.emoji,
+					label: parseTextNode(child.children),
+					disabled: child.disabled ?? false,
+					custom_id: child.customId,
+					options: child.options ?? [],
+					style: getButtonStyle(child.style ?? 'Primary'),
+				});
+				break;
+
+			case 'LinkButton':
+				parentInstance.components.push({
+					type: 'BUTTON',
 					emoji: child.emoji,
 					label: parseTextNode(child.children),
 					url: child.href,
 					disabled: child.disabled ?? false,
-					custom_id: child.customId,
 					options: child.options ?? [],
-					style: getButtonStyle(
-						child.style ?? (child.url ? 'Link' : 'Primary')
-					),
+					style: getButtonStyle('Link'),
 				});
 				break;
 
@@ -206,18 +224,14 @@ const hostConfig: Partial<
 		//  Because only those should be at the top level.
 		switch (child.type) {
 			case 'Text':
-				if (!container.content.text) container.content.text = '';
-				container.content.text += parseTextNode(child.children);
+				container.content.text = child.text;
 				break;
 
 			case 'Embed':
-				if (!container.content.embeds) container.content.embeds = [];
 				container.content.embeds.push(child.embed);
 				break;
 
 			case 'Row':
-				if (!container.content.components)
-					container.content.components = [];
 				container.content.components.push(child.components);
 				break;
 
@@ -228,19 +242,15 @@ const hostConfig: Partial<
 	removeChildFromContainer: (container, child) => {
 		switch (child.type) {
 			case 'Text':
-				// if (!container.text) container.text = "";
-				// container.text += parseTextNode(child.children);
+				container.content.text.content = ''; // TODO: might not work
 				break;
 			case 'Embed':
-				if (!container.content.embeds) container.content.embeds = [];
 				container.content.embeds?.filter(
 					(item) => item !== child.embed
 				);
 				break;
 
 			case 'Row':
-				if (!container.content.components)
-					container.content.components = [];
 				container.content.components?.filter(
 					(item) => item !== child.components
 				);
@@ -281,6 +291,9 @@ const hostConfig: Partial<
 					})
 					.filter(Boolean);
 
+			case 'Text':
+				return [['text', parseTextNode(newProps.children)]];
+
 			case 'Row':
 				// TODO: Update Components
 				return;
@@ -304,6 +317,10 @@ const hostConfig: Partial<
 				});
 				break;
 
+			case 'Text':
+				instance.text.content = updatePayload[0][1];
+				break;
+
 			default:
 				break;
 		}
@@ -320,7 +337,7 @@ export const renderMessage = (
 	let container: Container = {
 		client,
 		notify: onUpdate,
-		content: { embeds: [], components: [], text: '' },
+		content: { embeds: [], components: [], text: { content: '' } },
 	};
 	let reactContainer = reconciler.createContainer(container, 0, false, null);
 	reconciler.updateContainer(embedElement, reactContainer, null, null);

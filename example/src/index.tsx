@@ -1,6 +1,11 @@
 import { renderMessage } from 'reaccord';
-import { Message } from './Message';
-import { Client, Intents, Message as DiscordMessage } from 'discord.js';
+import { Counter } from './Counter';
+import {
+	Client,
+	Intents,
+	Message as DiscordMessage,
+	MessageActionRow,
+} from 'discord.js';
 import { config as loadEnv } from 'dotenv';
 
 loadEnv();
@@ -20,23 +25,23 @@ client.on('messageCreate', async ({ author, content, channel }) => {
 
 	let msg: DiscordMessage;
 
-	renderMessage(client, <Message />, async (message) => {
+	renderMessage(<Counter />, client, async (message) => {
 		if (msg)
 			msg.edit({
-				content: (message as any).text,
-				embeds: (message as any).embeds,
-				components: (message as any).components.map((row) => ({
-					type: 1,
-					components: row,
+				content: message.text.content,
+				embeds: message.embeds as any,
+				components: message.components.map((row) => ({
+					type: 'ACTION_ROW',
+					components: row as any,
 				})),
 			});
 		else
 			msg = await channel.send({
-				content: (message as any).text,
-				embeds: (message as any).embeds,
-				components: (message as any).components.map((row) => ({
-					type: 1,
-					components: row,
+				content: message.text.content,
+				embeds: message.embeds as any,
+				components: message.components.map((row) => ({
+					type: 'ACTION_ROW',
+					components: row as any,
 				})),
 			});
 	});

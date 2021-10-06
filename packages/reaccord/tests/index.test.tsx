@@ -21,6 +21,7 @@ import {
 	Title,
 	Url,
 } from '../';
+import { useEffect, useState } from 'react';
 
 describe('renders message', () => {
 	it('creates empty message', () => {
@@ -35,7 +36,7 @@ describe('renders message', () => {
 		expect(mockUpdateFn).toHaveBeenCalledWith<[Container['content']]>({
 			components: [],
 			embeds: [],
-			text: '',
+			text: { content: '' },
 		});
 	});
 
@@ -95,7 +96,7 @@ describe('renders text message', () => {
 		expect(mockUpdateFn).toHaveBeenCalledWith<[Container['content']]>({
 			components: [],
 			embeds: [],
-			text: 'qwerty',
+			text: { content: 'qwerty' },
 		});
 	});
 
@@ -116,4 +117,32 @@ describe('renders text message', () => {
 			'[hello](https://dvmm.dev/)'
 		);
 	});
+});
+
+describe('updates message', () => {
+	// it('updates message text', () => {
+	// 	const TestMessage = () => {
+	// 		const [msg, setMsg] = useState('initial');
+	// 		useEffect(() => {
+	// 			setMsg('changed');
+	// 		}, []);
+	// 		return <Text>{msg}</Text>;
+	// 	};
+	// 	setTimeout(() => {
+	// 		expect(callCount).to.equal(1);
+	// 		wrapper.setProps({ randomProp: 1 });
+	// 		setTimeout(() => {
+	// 			expect(callCount).to.equal(2);
+	// 			done();
+	// 		}, 50);
+	// 	}, 50);
+	// 	const mockUpdateFn = jest.fn();
+	// 	renderMessage(<Text>qwerty</Text>, null, mockUpdateFn);
+	// 	expect(mockUpdateFn).toHaveBeenCalledTimes(1);
+	// 	expect(mockUpdateFn).toHaveBeenCalledWith<[Container['content']]>({
+	// 		components: [],
+	// 		embeds: [],
+	// 		text: 'qwerty',
+	// 	});
+	// });
 });
