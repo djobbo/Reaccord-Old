@@ -3,24 +3,31 @@ import { Client } from 'discord.js';
 import { ReactNode } from 'react';
 import ReactReconciler, { HostConfig } from 'react-reconciler';
 
-const parseTextNode = (el): string => {
+export const parseTextNode = (el): string => {
 	if (!el) return '';
+
 	if (Array.isArray(el)) return parseTextNodeGroup(el);
 
 	if (typeof el !== 'object') return el.toString();
 
 	switch (el.type) {
 		case 'Span':
-			return parseTextNode(el.props.children);
+			const decoration =
+				(el.props.bold ? '**' : '') + (el.props.italic ? '*' : '');
+			return decoration + parseTextNode(el.props.children) + decoration;
+		case 'Link':
+			return `[${parseTextNode(el.props.children)}](${parseTextNode(
+				el.props.href
+			)})`;
 		default:
-			return '';
+			return parseTextNode(el.props?.children ?? '');
 	}
 };
 
 type NotifyFunction = (message: unknown) => Promise<void>;
 
-interface Container {
-	client: Client;
+export interface Container {
+	client?: Client | null;
 	notify?: NotifyFunction;
 	content: { embeds: unknown[]; components: unknown[]; text: string };
 }
@@ -90,7 +97,7 @@ const hostConfig: Partial<
 				if (props.onClick) {
 					console.log('click');
 
-					rootContainer.client.on(
+					rootContainer.client?.on(
 						'interactionCreate',
 						(interaction) => {
 							console.log({ interaction });
@@ -146,7 +153,7 @@ const hostConfig: Partial<
 					type: 2,
 					emoji: child.emoji,
 					label: parseTextNode(child.children),
-					url: child.url,
+					url: child.href,
 					disabled: child.disabled ?? false,
 					custom_id: child.customId,
 					options: child.options ?? [],
@@ -180,7 +187,7 @@ const hostConfig: Partial<
 					type: 2,
 					emoji: child.emoji,
 					label: parseTextNode(child.children),
-					url: child.url,
+					url: child.href,
 					disabled: child.disabled ?? false,
 					custom_id: child.customId,
 					options: child.options ?? [],
@@ -306,8 +313,8 @@ const hostConfig: Partial<
 const reconciler = ReactReconciler(hostConfig as any); // TODO: Fix type
 
 export const renderMessage = (
-	client: Client,
 	embedElement: ReactNode,
+	client?: Client | null,
 	onUpdate?: NotifyFunction
 ) => {
 	let container: Container = {
@@ -317,5 +324,4 @@ export const renderMessage = (
 	};
 	let reactContainer = reconciler.createContainer(container, 0, false, null);
 	reconciler.updateContainer(embedElement, reactContainer, null, null);
-	return container;
 };

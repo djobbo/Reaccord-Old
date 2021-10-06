@@ -124,7 +124,7 @@ interface ButtonProps extends ButtonPropsBase {
 export const Button: ReaccordNodeComponent<ButtonProps>;
 
 interface LinkButtonProps extends ButtonPropsBase {
-	url: string;
+	href: string;
 }
 export const LinkButton: ReaccordNodeComponent<LinkButtonProps>;
 
