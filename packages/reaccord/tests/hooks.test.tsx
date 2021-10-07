@@ -21,7 +21,8 @@ import {
     Url,
 } from ".."
 import { useEffect, useState } from "react"
-import { Container, renderMessage } from "../src/Reaccord"
+import { renderMessage } from "../src/renderMessage"
+import { Container } from "../src/types"
 
 describe("Hooks", () => {
     test("useState hook", (done) => {

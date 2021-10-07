@@ -1,4 +1,5 @@
-import { Container, renderMessage } from "../src/Reaccord"
+import { renderMessage } from "../src/renderMessage"
+import { Container } from "../src/types"
 import {
     Author,
     Br,
@@ -20,7 +21,7 @@ import {
     Timestamp,
     Title,
     Url,
-} from "../src/nodeProps"
+} from "../src/nodes"
 
 describe("renders message", () => {
     it("creates empty message", () => {

@@ -1,9 +1,14 @@
-export const parseTextNode = (el): string => {
+import { ReactNode } from "react"
+import { hasOwnProperty } from "./util/hasOwnProperty"
+
+export const parseTextNode = (el: ReactNode): string => {
     if (typeof el === "undefined" || el === null) return ""
 
     if (Array.isArray(el)) return parseTextNodeGroup(el)
 
     if (typeof el !== "object") return el.toString()
+
+    if (!hasOwnProperty(el, "type")) return ""
 
     switch (el.type) {
         case "Span":

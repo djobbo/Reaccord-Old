@@ -1,2 +1,2 @@
-export { renderMessage } from "./Reaccord"
-export * from "./nodeProps"
+export { renderMessage } from "./renderMessage"
+export * from "./nodes"
