@@ -1,3 +1,3 @@
-describe('render', () => {
-	it("isn't empty", () => {});
-});
+describe("render", () => {
+    it("isn't empty", () => {})
+})

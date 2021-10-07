@@ -1,151 +1,171 @@
-import { APIMessageComponentEmoji } from 'discord-api-types/v9';
-import { ReactNode, Key, FC } from 'react';
-export * from './lib/Reaccord';
+import { APIMessageComponentEmoji } from "discord-api-types/v9"
+import { ReactNode, Key, FC } from "react"
+export * from "./lib/Reaccord"
 
-type Keyed<Props> = Props & { key?: Key | null };
+export type IntrinsicElement =
+    | "Embed"
+    | "Author"
+    | "Color"
+    | "Desc"
+    | "Field"
+    | "Footer"
+    | "Image"
+    | "Timestamp"
+    | "Title"
+    | "Url"
+    | "Row"
+    | "Button"
+    | "LinkButton"
+    | "Select"
+    | "Option"
+    | "Text"
+    | "Br"
+    | "Span"
+    | "Link"
+    | "Code"
 
 interface ButtonBase {
-	children?: ReactNode;
-	emoji?: APIMessageComponentEmoji;
-	disabled?: boolean;
+    children?: ReactNode
+    emoji?: APIMessageComponentEmoji
+    disabled?: boolean
 }
 
 interface Button extends ButtonBase {
-	style: 'Primary' | 'Secondary' | 'Success' | 'Danger';
-	customId: string;
-	onClick?: (message: unknown) => void;
+    style: "Primary" | "Secondary" | "Success" | "Danger"
+    customId: string
+    onClick?: (message: unknown) => void
 }
 
 interface Link extends ButtonBase {
-	style: 'Link';
-	url: string;
+    style: "Link"
+    url: string
 }
 
-type ReaccordNodeComponent<Props> = FC<Props>;
+type ReaccordNodeComponent<Props> = FC<Props>
 
 interface EmbedProps {
-	children?: ReactNode;
+    children?: ReactNode
 }
-export const Embed: ReaccordNodeComponent<EmbedProps>;
+export const Embed: ReaccordNodeComponent<EmbedProps>
 
 interface AuthorProps {
-	children?: ReactNode;
-	iconURL?: string;
-	url?: string;
+    children?: ReactNode
+    iconURL?: string
+    url?: string
 }
-export const Author: ReaccordNodeComponent<AuthorProps>;
+export const Author: ReaccordNodeComponent<AuthorProps>
 interface ColorProps {
-	hex: string;
+    hex: string
 }
-export const Color: ReaccordNodeComponent<ColorProps>;
+export const Color: ReaccordNodeComponent<ColorProps>
 interface DescProps {
-	children?: ReactNode;
+    children?: ReactNode
 }
-export const Desc: ReaccordNodeComponent<DescProps>;
+export const Desc: ReaccordNodeComponent<DescProps>
 
 interface FieldProps {
-	children?: ReactNode;
-	title: ReactNode;
-	inline?: boolean;
+    children?: ReactNode
+    title: ReactNode
+    inline?: boolean
 }
-export const Field: ReaccordNodeComponent<FieldProps>;
+export const Field: ReaccordNodeComponent<FieldProps>
 
 interface FooterProps {
-	children?: ReactNode;
-	iconUrl?: string;
+    children?: ReactNode
+    iconUrl?: string
 }
-export const Footer: ReaccordNodeComponent<FooterProps>;
+export const Footer: ReaccordNodeComponent<FooterProps>
 
 interface ImageProps {
-	url: string;
+    url: string
 }
-export const Image: ReaccordNodeComponent<ImageProps>;
+export const Image: ReaccordNodeComponent<ImageProps>
 
 interface TimestampProps {
-	timestamp: number | Date;
+    timestamp: number | Date
 }
-export const Timestamp: ReaccordNodeComponent<TimestampProps>;
+export const Timestamp: ReaccordNodeComponent<TimestampProps>
 interface TitleProps {
-	children?: ReactNode;
+    children?: ReactNode
 }
-export const Title: ReaccordNodeComponent<TitleProps>;
+export const Title: ReaccordNodeComponent<TitleProps>
 
 // underline / crossed
 interface UrlProps {
-	href: string;
+    href: string
 }
-export const Url: ReaccordNodeComponent<UrlProps>;
+export const Url: ReaccordNodeComponent<UrlProps>
 
 // Text Nodes
 interface TextProps {
-	children?: ReactNode;
+    children?: ReactNode
 }
-export const Text: ReaccordNodeComponent<TextProps>;
+export const Text: ReaccordNodeComponent<TextProps>
 interface BrProps {}
-export const Br: ReaccordNodeComponent<BrProps>;
+export const Br: ReaccordNodeComponent<BrProps>
 
 interface SpanProps {
-	children?: ReactNode;
-	bold?: boolean;
-	italic?: boolean;
+    children?: ReactNode
+    bold?: boolean
+    italic?: boolean
 }
-export const Span: ReaccordNodeComponent<SpanProps>;
+export const Span: ReaccordNodeComponent<SpanProps>
 
 interface LinkProps {
-	href: string;
-	children?: ReactNode;
+    href: string
+    children?: ReactNode
 }
-export const Link: ReaccordNodeComponent<LinkProps>;
+export const Link: ReaccordNodeComponent<LinkProps>
 
 interface CodeProps {
-	lang: string;
-	children?: ReactNode;
+    lang: string
+    children?: ReactNode
 }
-export const Code: ReaccordNodeComponent<CodeProps>;
+export const Code: ReaccordNodeComponent<CodeProps>
 
 // Interaction Nodes
 interface RowProps {
-	children?: ReactNode;
+    children?: ReactNode
 }
-export const Row: ReaccordNodeComponent<RowProps>;
+export const Row: ReaccordNodeComponent<RowProps>
 
 interface ButtonPropsBase {
-	children?: ReactNode;
-	emoji?: APIMessageComponentEmoji;
-	disabled?: boolean;
+    children?: ReactNode
+    emoji?: APIMessageComponentEmoji
+    disabled?: boolean
 }
 
 interface ButtonProps extends ButtonPropsBase {
-	style?: 'Primary' | 'Secondary' | 'Success' | 'Danger';
-	customId: string;
-	onClick?: (message: unknown) => void;
-	options?: [];
+    style?: "Primary" | "Secondary" | "Success" | "Danger"
+    customId: string
+    onClick?: (message: unknown) => void
+    options?: []
 }
-export const Button: ReaccordNodeComponent<ButtonProps>;
+export const Button: ReaccordNodeComponent<ButtonProps>
 
 interface LinkButtonProps extends ButtonPropsBase {
-	href: string;
+    href: string
 }
-export const LinkButton: ReaccordNodeComponent<LinkButtonProps>;
+export const LinkButton: ReaccordNodeComponent<LinkButtonProps>
 
 interface SelectProps {
-	children?: ReactNode;
-	customId: string;
-	placeholder: ReactNode;
-	minValues?: number;
-	maxValues?: number;
-	disabled?: boolean;
+    children?: ReactNode
+    customId: string
+    placeholder: ReactNode
+    minValues?: number
+    maxValues?: number
+    disabled?: boolean
 }
-export const Select: ReaccordNodeComponent<SelectProps>;
+export const Select: ReaccordNodeComponent<SelectProps>
 
 interface OptionProps {
-	children?: ReactNode;
-	value: string;
-	description?: string;
-	emoji?: APIMessageComponentEmoji;
-	default?: boolean;
+    children?: ReactNode
+    value: string
+    description?: string
+    emoji?: APIMessageComponentEmoji
+    default?: boolean
 }
-export const Option: ReaccordNodeComponent<OptionProps>;
+export const Option: ReaccordNodeComponent<OptionProps>
 
 // declare global {
 // 	namespace JSX {

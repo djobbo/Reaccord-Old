@@ -10,7 +10,8 @@
 	],
 	"scripts": {
 		"dev": "lerna run dev --parallel",
-		"test": "lerna run test"
+		"test": "lerna run test",
+		"test:w": "lerna run test:w --parallel"
 	},
 	"devDependencies": {
 		"lerna": "^4.0.0"
