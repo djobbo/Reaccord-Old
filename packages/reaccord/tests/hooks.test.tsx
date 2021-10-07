@@ -12,7 +12,7 @@ import {
     Link,
     LinkButton,
     Option,
-    Row,
+    InteractionRow,
     Select,
     Span,
     Text,

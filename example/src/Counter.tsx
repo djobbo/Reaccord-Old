@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Text, Row, Button, LinkButton } from "reaccord"
+import { Text, InteractionRow, Button, LinkButton } from "reaccord"
 
 export const Counter = () => {
     const [count, setCount] = useState(0)
@@ -7,7 +7,7 @@ export const Counter = () => {
     return (
         <>
             <Text>Count: {count}</Text>
-            <Row>
+            <InteractionRow>
                 <Button
                     emoji={{ name: "➕" }}
                     onClick={() => {
@@ -25,7 +25,7 @@ export const Counter = () => {
                     customId="minusbtn"
                 ></Button>
                 <LinkButton href="https://dvmm.dev">dvmm.dev</LinkButton>
-            </Row>
+            </InteractionRow>
         </>
     )
 }
