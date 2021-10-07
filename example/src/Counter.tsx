@@ -15,7 +15,7 @@ export const Counter = () => {
                     }}
                     style="Primary"
                     customId="plusbtn"
-                ></Button>
+                />
                 <Button
                     emoji={{ name: "➖" }}
                     onClick={() => {
@@ -23,7 +23,7 @@ export const Counter = () => {
                     }}
                     style="Secondary"
                     customId="minusbtn"
-                ></Button>
+                />
                 <LinkButton href="https://dvmm.dev">dvmm.dev</LinkButton>
             </InteractionRow>
         </>

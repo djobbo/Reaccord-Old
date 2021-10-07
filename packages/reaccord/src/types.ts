@@ -32,6 +32,7 @@ export interface Container {
     client?: Client | null
     notify?: NotifyFunction
     content: MessageContent
+    maxAge?: number
 }
 
 type PropsWithType<

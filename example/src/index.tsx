@@ -1,11 +1,6 @@
-import { renderMessage } from "reaccord"
+import { sendMessage } from "reaccord"
 import { Counter } from "./Counter"
-import {
-    Client,
-    Intents,
-    Message as DiscordMessage,
-    MessageActionRow,
-} from "discord.js"
+import { Client, Intents } from "discord.js"
 import { config as loadEnv } from "dotenv"
 
 loadEnv()
@@ -23,28 +18,7 @@ client.on("messageCreate", async ({ author, content, channel }) => {
 
     if (content !== "..") return
 
-    let msg: DiscordMessage
-
-    renderMessage(<Counter />, client, async (message) => {
-        if (msg)
-            msg.edit({
-                content: message.text.content,
-                embeds: message.embeds as any,
-                components: message.components.map((row) => ({
-                    type: "ACTION_ROW",
-                    components: row as any,
-                })),
-            })
-        else
-            msg = await channel.send({
-                content: message.text.content,
-                embeds: message.embeds as any,
-                components: message.components.map((row) => ({
-                    type: "ACTION_ROW",
-                    components: row as any,
-                })),
-            })
-    })
+    sendMessage(<Counter />, channel, client, 10 * 1000)
 })
 
 client.on("ready", () =>

@@ -1,5 +1,6 @@
 import { ReactNode } from "react"
 import { APIMessageComponentEmoji } from "discord-api-types/v9"
+import { Interaction } from "discord.js"
 
 // Embed Nodes
 export interface EmbedProps {
@@ -84,7 +85,7 @@ export interface ButtonPropsBase {
 export interface ButtonProps extends ButtonPropsBase {
     style?: "Primary" | "Secondary" | "Success" | "Danger"
     customId: string
-    onClick?: (message: unknown) => void
+    onClick?: (interaction: Interaction) => void
     options?: []
 }
 

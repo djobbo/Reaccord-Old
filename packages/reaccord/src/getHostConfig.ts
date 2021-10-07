@@ -3,7 +3,8 @@ import { parseTextNode } from "./parseTextNode"
 import { IntrinsicElement } from "./nodes"
 import { ChildInstance, Container, Instance, ParentInstance } from "./types"
 import { NodeProps } from "./nodes"
-import { Client } from "discord.js"
+import { Interaction } from "discord.js"
+import { hasOwnProperty } from "./util/hasOwnProperty"
 
 const textContainers: IntrinsicElement[] = [
     "Text",
@@ -83,16 +84,41 @@ export const getHostConfig = () => {
 
                 case "Button":
                     const buttonProps = props as NodeProps["Button"]
-                    rootContainer.client?.on(
-                        "interactionCreate",
-                        (interaction) => {
-                            if (!interaction.isButton()) return
-                            if (interaction.customId !== buttonProps.customId)
-                                return
-                            buttonProps.onClick?.(interaction)
-                            interaction.deferUpdate()
-                        },
-                    )
+                    const listener = (interaction: Interaction) => {
+                        if (!interaction.isButton()) return
+                        if (interaction.customId !== buttonProps.customId)
+                            return
+                        buttonProps.onClick?.(interaction)
+                        interaction.deferUpdate()
+
+                        const { maxAge, client } = rootContainer
+                        console.log({ maxAge })
+
+                        client?.removeListener("interactionCreate", listener)
+
+                        if (!maxAge || maxAge === Infinity) {
+                            client?.once("interactionCreate", listener)
+                            return
+                        }
+
+                        try {
+                            let timestamp = hasOwnProperty(
+                                interaction.message,
+                                "timestamp",
+                            )
+                                ? parseInt(interaction.message.timestamp)
+                                : interaction.message.createdTimestamp
+
+                            if (!timestamp || Date.now() - timestamp < maxAge)
+                                rootContainer.client?.once(
+                                    "interactionCreate",
+                                    listener,
+                                )
+                        } catch (e) {
+                            console.error(`Couldn't parse Message Timestamp.`)
+                        }
+                    }
+                    rootContainer.client?.once("interactionCreate", listener)
 
                     return {
                         type,
