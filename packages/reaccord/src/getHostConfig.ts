@@ -92,7 +92,6 @@ export const getHostConfig = () => {
                         interaction.deferUpdate()
 
                         const { maxAge, client } = rootContainer
-                        console.log({ maxAge })
 
                         client?.removeListener("interactionCreate", listener)
 
