@@ -1,4 +1,5 @@
-import { Client } from "discord.js"
+import { Client, Interaction } from "discord.js"
+
 import {
     AuthorProps,
     BrProps,
@@ -19,6 +20,12 @@ import {
     TitleProps,
     UrlProps,
 } from "./nodes"
+
+import {
+    APIButtonComponent,
+    APISelectMenuComponent,
+    APISelectMenuOption,
+} from "discord-api-types/v9"
 
 export interface MessageContent {
     embeds: unknown[]
@@ -44,7 +51,10 @@ type PropsWithType<
 
 type AuthorInstance = PropsWithType<"Author", AuthorProps>
 type BrInstance = PropsWithType<"Br", BrProps>
-type ButtonInstance = PropsWithType<"Button", ButtonProps>
+type ButtonInstance = PropsWithType<
+    "Button",
+    ButtonProps & { listener?: (interaction: Interaction) => void }
+>
 type CodeInstance = PropsWithType<"Code", CodeProps>
 type ColorInstance = PropsWithType<"Color", ColorProps>
 type DescInstance = PropsWithType<"Desc", DescProps>
@@ -54,7 +64,13 @@ type ImageInstance = PropsWithType<"Image", ImageProps>
 type LinkInstance = PropsWithType<"Link", LinkProps>
 type LinkButtonInstance = PropsWithType<"LinkButton", LinkButtonProps>
 type OptionInstance = PropsWithType<"Option", OptionProps>
-type SelectInstance = PropsWithType<"Select", SelectProps>
+type SelectInstance = PropsWithType<
+    "Select",
+    SelectProps & {
+        options: APISelectMenuOption[]
+        listener?: (interaction: Interaction) => void
+    }
+>
 type SpanInstance = PropsWithType<"Span", SpanProps>
 type TimestampInstance = PropsWithType<"Timestamp", TimestampProps>
 type TitleInstance = PropsWithType<"Title", TitleProps>
@@ -73,7 +89,6 @@ export type ChildInstance =
     | LinkInstance
     | LinkButtonInstance
     | OptionInstance
-    | SelectInstance
     | SpanInstance
     | TimestampInstance
     | TitleInstance
@@ -96,7 +111,7 @@ type EmbedInstance = PropsWithType<
 >
 type InteractionRowInstance = PropsWithType<
     "InteractionRow",
-    { components: unknown[] }
+    { components: (APIButtonComponent | APISelectMenuComponent)[] }
 >
 export type TextInstance = PropsWithType<"Text", { text: { content: string } }>
 
@@ -104,5 +119,6 @@ export type ParentInstance =
     | EmbedInstance
     | InteractionRowInstance
     | TextInstance
+    | SelectInstance
 
 export type Instance = ChildInstance | ParentInstance

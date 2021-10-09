@@ -1,6 +1,6 @@
 import { ReactNode } from "react"
 import { APIMessageComponentEmoji } from "discord-api-types/v9"
-import { Interaction } from "discord.js"
+import { ButtonInteraction, SelectMenuInteraction } from "discord.js"
 
 // Embed Nodes
 export interface EmbedProps {
@@ -85,7 +85,7 @@ export interface ButtonPropsBase {
 export interface ButtonProps extends ButtonPropsBase {
     style?: "Primary" | "Secondary" | "Success" | "Danger"
     customId: string
-    onClick?: (interaction: Interaction) => void
+    onClick?: (interaction: ButtonInteraction) => void
     options?: []
 }
 
@@ -93,21 +93,36 @@ export interface LinkButtonProps extends ButtonPropsBase {
     href: string
 }
 
-export interface SelectProps {
+export interface SelectPropsBase {
     children?: ReactNode
     customId: string
     placeholder: ReactNode
     minValues?: number
     maxValues?: number
     disabled?: boolean
+    single?: boolean
 }
+
+export interface SelectPropsSingle extends SelectPropsBase {
+    single: true
+    maxValues?: 1
+    onChange?: (value: string, interaction: SelectMenuInteraction) => void
+}
+
+export interface SelectPropsMultiple extends SelectPropsBase {
+    single?: false
+    maxValues?: number
+    onChange?: (values: string[], interaction: SelectMenuInteraction) => void
+}
+
+export type SelectProps = SelectPropsSingle | SelectPropsMultiple
 
 export interface OptionProps {
     children?: ReactNode
     value: string
-    description?: string
+    description?: ReactNode
     emoji?: APIMessageComponentEmoji
-    default?: boolean
+    selected?: boolean
 }
 
 export interface NodeProps {

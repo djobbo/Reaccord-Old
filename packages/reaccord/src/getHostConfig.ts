@@ -3,8 +3,12 @@ import { parseTextNode } from "./parseTextNode"
 import { IntrinsicElement } from "./nodes"
 import { ChildInstance, Container, Instance, ParentInstance } from "./types"
 import { NodeProps } from "./nodes"
-import { Interaction } from "discord.js"
-import { hasOwnProperty } from "./util/hasOwnProperty"
+import {
+    ButtonInteraction,
+    Interaction,
+    SelectMenuInteraction,
+} from "discord.js"
+import { ComponentType } from "discord-api-types"
 
 const textContainers: IntrinsicElement[] = [
     "Text",
@@ -12,6 +16,7 @@ const textContainers: IntrinsicElement[] = [
     "Field",
     "Button",
     "LinkButton",
+    "Option",
 ]
 
 const buttonStyles = {
@@ -23,6 +28,78 @@ const buttonStyles = {
 }
 
 const getButtonStyle = (style: keyof typeof buttonStyles) => buttonStyles[style]
+
+const getButtonListener =
+    (customId: string, onClick?: (interaction: ButtonInteraction) => void) =>
+    (interaction: Interaction) => {
+        if (!interaction.isButton()) return
+        if (interaction.customId !== customId) return
+        onClick?.(interaction)
+        interaction.deferUpdate()
+
+        // const { maxAge, client } = rootContainer
+
+        // client?.removeListener("interactionCreate", listener)
+
+        // TODO: Max Age
+        // if (!maxAge || maxAge === Infinity) {
+        //     client?.once("interactionCreate", listener)
+        //     return
+        // }
+
+        // try {
+        //     let timestamp = hasOwnProperty(
+        //         interaction.message,
+        //         "timestamp",
+        //     )
+        //         ? parseInt(interaction.message.timestamp)
+        //         : interaction.message.createdTimestamp
+
+        //     console.log({ maxAge }, Date.now() - timestamp)
+
+        //     if (!timestamp || Date.now() - timestamp < maxAge)
+        //         rootContainer.client?.once(
+        //             "interactionCreate",
+        //             listener,
+        //         )
+        // } catch (e) {
+        //     console.error(`Couldn't parse Message Timestamp.`)
+        // }
+    }
+
+const getSingleSelectListener =
+    (
+        customId: string,
+        onChange?: (value: string, interaction: SelectMenuInteraction) => void,
+    ) =>
+    (interaction: Interaction) => {
+        if (!interaction.isSelectMenu()) return
+        if (interaction.customId !== customId) return
+
+        onChange?.(interaction.values[0], interaction)
+
+        interaction.deferUpdate()
+
+        // TODO: Max Age
+    }
+const getMultipleSelectListener =
+    (
+        customId: string,
+        onChange?: (
+            value: string[],
+            interaction: SelectMenuInteraction,
+        ) => void,
+    ) =>
+    (interaction: Interaction) => {
+        if (!interaction.isSelectMenu()) return
+        if (interaction.customId !== customId) return
+
+        onChange?.(interaction.values, interaction)
+
+        interaction.deferUpdate()
+
+        // TODO: Max Age
+    }
 
 export const getHostConfig = () => {
     // TODO: Fix type
@@ -37,7 +114,7 @@ export const getHostConfig = () => {
             null,
             null,
             {},
-            [string, string][],
+            any,
             null,
             null,
             null
@@ -82,47 +159,63 @@ export const getHostConfig = () => {
                         components: [],
                     }
 
-                case "Button":
+                case "Button": {
                     const buttonProps = props as NodeProps["Button"]
-                    const listener = (interaction: Interaction) => {
-                        if (!interaction.isButton()) return
-                        if (interaction.customId !== buttonProps.customId)
-                            return
-                        buttonProps.onClick?.(interaction)
-                        interaction.deferUpdate()
-
-                        const { maxAge, client } = rootContainer
-
-                        client?.removeListener("interactionCreate", listener)
-
-                        if (!maxAge || maxAge === Infinity) {
-                            client?.once("interactionCreate", listener)
-                            return
-                        }
-
-                        try {
-                            let timestamp = hasOwnProperty(
-                                interaction.message,
-                                "timestamp",
-                            )
-                                ? parseInt(interaction.message.timestamp)
-                                : interaction.message.createdTimestamp
-
-                            if (!timestamp || Date.now() - timestamp < maxAge)
-                                rootContainer.client?.once(
-                                    "interactionCreate",
-                                    listener,
-                                )
-                        } catch (e) {
-                            console.error(`Couldn't parse Message Timestamp.`)
-                        }
-                    }
-                    rootContainer.client?.once("interactionCreate", listener)
+                    const listener = getButtonListener(
+                        buttonProps.customId,
+                        buttonProps.onClick,
+                    )
+                    rootContainer.client?.on("interactionCreate", listener)
 
                     return {
                         type,
                         ...buttonProps,
+                        listener,
                     }
+                }
+
+                case "Select": {
+                    const selectProps = props as NodeProps["Select"]
+
+                    const listener = selectProps.single
+                        ? getSingleSelectListener(
+                              selectProps.customId,
+                              selectProps.onChange,
+                          )
+                        : getMultipleSelectListener(
+                              selectProps.customId,
+                              selectProps.onChange,
+                          )
+
+                    // const listener = (interaction: Interaction) => {
+                    //     if (!interaction.isSelectMenu()) return
+                    //     if (interaction.customId !== selectProps.customId)
+                    //         return
+
+                    //     if (selectProps.single) {
+                    //         selectProps.onChange?.(
+                    //             interaction.values[0],
+                    //             interaction,
+                    //         )
+                    //     } else {
+                    //         selectProps.onChange?.(
+                    //             interaction.values,
+                    //             interaction,
+                    //         )
+                    //     }
+                    //     interaction.deferUpdate()
+
+                    //     // TODO: Max Age
+                    // }
+                    rootContainer.client?.on("interactionCreate", listener)
+
+                    return {
+                        type,
+                        options: [],
+                        listener,
+                        ...selectProps,
+                    }
+                }
 
                 default:
                     return {
@@ -176,7 +269,7 @@ export const getHostConfig = () => {
                             "Found <Button/> node outside of <InteractionRow/>",
                         )
                     parentInstance.components.push({
-                        type: "BUTTON",
+                        type: ComponentType.Button,
                         emoji: child.emoji,
                         label: parseTextNode(child.children),
                         disabled: child.disabled ?? false,
@@ -192,12 +285,26 @@ export const getHostConfig = () => {
                             "Found <Button/> node outside of <InteractionRow/>",
                         )
                     parentInstance.components.push({
-                        type: "BUTTON",
+                        type: ComponentType.Button,
                         emoji: child.emoji,
                         label: parseTextNode(child.children),
                         url: child.href,
                         disabled: child.disabled ?? false,
                         style: getButtonStyle("Link"),
+                    })
+                    break
+
+                case "Option":
+                    if (parentInstance.type !== "Select")
+                        throw new Error(
+                            "Found <Option/> node outside of <Select/>",
+                        )
+                    parentInstance.options.push({
+                        default: child.selected,
+                        description: parseTextNode(child.description),
+                        emoji: child.emoji,
+                        value: child.value,
+                        label: parseTextNode(child.children),
                     })
                     break
 
@@ -234,7 +341,7 @@ export const getHostConfig = () => {
                             "Found <Button/> node outside of <InteractionRow/>",
                         )
                     parentInstance.components.push({
-                        type: "BUTTON",
+                        type: ComponentType.Button,
                         emoji: child.emoji,
                         label: parseTextNode(child.children),
                         disabled: child.disabled ?? false,
@@ -250,12 +357,26 @@ export const getHostConfig = () => {
                             "Found <Button/> node outside of <InteractionRow/>",
                         )
                     parentInstance.components.push({
-                        type: "BUTTON",
+                        type: ComponentType.Button,
                         emoji: child.emoji,
                         label: parseTextNode(child.children),
                         url: child.href,
                         disabled: child.disabled ?? false,
                         style: getButtonStyle("Link"),
+                    })
+                    break
+
+                case "Option":
+                    if (parentInstance.type !== "Select")
+                        throw new Error(
+                            "Found <Option/> node outside of <Select/>",
+                        )
+                    parentInstance.options.push({
+                        default: child.selected,
+                        description: parseTextNode(child.description),
+                        emoji: child.emoji,
+                        value: child.value,
+                        label: parseTextNode(child.children),
                     })
                     break
 
@@ -282,10 +403,29 @@ export const getHostConfig = () => {
                     container.content.components.push(child.components)
                     break
 
+                case "Select":
+                    container.content.components.push([
+                        {
+                            type: ComponentType.SelectMenu,
+                            label: parseTextNode(child.children),
+                            disabled: child.disabled ?? false,
+                            style: getButtonStyle("Link"),
+                            custom_id: child.customId,
+                            options: child.options,
+                            min_values: child.minValues,
+                            max_values:
+                                child.maxValues ??
+                                (child.single ? 1 : undefined),
+                            placeholder: parseTextNode(child.placeholder),
+                        },
+                    ])
+                    break
+
                 default:
                     throw new Error("Bad Node")
             }
         },
+        //TODO: removeChild() -> Button remove listener
         removeChildFromContainer: (
             container: Container,
             child: ParentInstance,
@@ -301,8 +441,21 @@ export const getHostConfig = () => {
                     break
 
                 case "InteractionRow":
+                    // Remove Button listeners
                     container.content.components?.filter(
                         (item) => item !== child.components,
+                    )
+                    break
+
+                case "Select":
+                    if (child.listener)
+                        container.client?.removeListener(
+                            "interactionCreate",
+                            child.listener,
+                        )
+
+                    container.content.components?.filter(
+                        (item) => item !== child,
                     )
                     break
 
@@ -311,7 +464,7 @@ export const getHostConfig = () => {
             }
         },
         prepareUpdate: (
-            instance: ParentInstance,
+            instance,
             type,
             oldProps,
             newProps,
@@ -342,17 +495,108 @@ export const getHostConfig = () => {
                         .filter(Boolean)
 
                 case "Text":
-                    return [["text", parseTextNode(newProps.children)]]
+                    return parseTextNode(newProps.children)
 
                 case "InteractionRow":
                     // TODO: Update Components
-                    return
+                    return (
+                        Array.isArray(newProps.children)
+                            ? newProps.children
+                            : [newProps.children]
+                    )?.map((child) => {
+                        switch (child.type) {
+                            case "Button":
+                                if (child.listener)
+                                    rootContainer.client?.removeListener(
+                                        "interactionCreate",
+                                        child.listener,
+                                    )
+                                return {
+                                    type: ComponentType.Button,
+                                    emoji: child.props.emoji,
+                                    label: parseTextNode(child.props.children),
+                                    disabled: child.props.disabled ?? false,
+                                    custom_id: child.props.customId,
+                                    options: child.props.options ?? [],
+                                    style: getButtonStyle(
+                                        child.props.style ?? "Primary",
+                                    ),
+                                }
 
+                            case "LinkButton":
+                                return {
+                                    type: ComponentType.Button,
+                                    emoji: child.props.emoji,
+                                    label: parseTextNode(child.props.children),
+                                    url: child.props.href,
+                                    disabled: child.props.disabled ?? false,
+                                    style: getButtonStyle("Link"),
+                                }
+
+                            default:
+                                return null
+                        }
+                    })
+
+                case "Select":
+                    if (instance.listener)
+                        rootContainer.client?.removeListener(
+                            "interactionCreate",
+                            instance.listener,
+                        )
+                    instance.listener = newProps.single
+                        ? getSingleSelectListener(
+                              newProps.customId,
+                              newProps.onChange,
+                          )
+                        : getMultipleSelectListener(
+                              newProps.customId,
+                              newProps.onChange,
+                          )
+                    rootContainer.client?.on(
+                        "interactionCreate",
+                        instance.listener,
+                    )
+                    return (
+                        Array.isArray(newProps.children)
+                            ? newProps.children
+                            : [newProps.children]
+                    )?.map((child) => {
+                        if (child.type !== "Option")
+                            throw new Error(
+                                "Only <Option/> nodes should be inside of <Select/>",
+                            )
+
+                        return {
+                            default: child.props.selected,
+                            description: parseTextNode(child.props.description),
+                            emoji: child.props.emoji,
+                            value: child.props.value,
+                            label: parseTextNode(child.props.children),
+                        }
+                    })
+
+                case "Button":
+                    //TODO: check here
+                    if (instance.listener)
+                        rootContainer.client?.removeListener(
+                            "interactionCreate",
+                            instance.listener,
+                        )
+                    instance.listener = getButtonListener(
+                        newProps.customId,
+                        newProps.onClick,
+                    )
+                    rootContainer.client?.on(
+                        "interactionCreate",
+                        instance.listener,
+                    )
+                    return
                 default:
                     return
             }
         },
-        commitUpdate: (instance, updatePayload) => {
+        commitUpdate: (instance: ParentInstance, updatePayload) => {
             switch (instance.type) {
                 case "Embed":
                     updatePayload.forEach(([prop, value]) => {
@@ -361,7 +605,17 @@ export const getHostConfig = () => {
                     break
 
                 case "Text":
-                    instance.text.content = updatePayload[0][1]
+                    instance.text.content = updatePayload
+                    break
+
+                case "InteractionRow":
+                    instance.components.length = 0
+                    instance.components.push(...updatePayload)
+                    break
+
+                case "Select":
+                    instance.options.length = 0
+                    instance.options.push(...updatePayload)
                     break
 
                 default:
