@@ -1,6 +1,6 @@
 import { Client, Message, MessageOptions, TextBasedChannels } from "discord.js"
 import { ReactNode } from "react"
-import { renderMessage } from "./renderMessage"
+import { renderMessage } from "../renderer"
 
 export const sendMessage = (
     messageElement: ReactNode,

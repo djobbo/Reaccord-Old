@@ -1,5 +1,5 @@
-import { Link, Span } from ".."
-import { parseTextNode } from "../src/parseTextNode"
+import { Link, Span } from "../nodes"
+import { parseTextNode } from "."
 
 describe("renders text message", () => {
     it("parses text node", () => {

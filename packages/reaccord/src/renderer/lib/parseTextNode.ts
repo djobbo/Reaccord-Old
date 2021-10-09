@@ -1,5 +1,5 @@
 import { ReactNode } from "react"
-import { hasOwnProperty } from "./util/hasOwnProperty"
+import { hasOwnProperty } from "../../util/hasOwnProperty"
 
 export const parseTextNode = (el: ReactNode): string => {
     if (typeof el === "undefined" || el === null) return ""

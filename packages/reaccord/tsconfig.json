@@ -5,9 +5,10 @@
         "esModuleInterop": true,
         "lib": ["esnext"],
         "jsx": "react-jsx",
-        "outDir": "lib",
+        "outDir": "dist",
         "declaration": true,
 
         "noImplicitAny": false // TODO
-    }
+    },
+    "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]
 }

@@ -19,10 +19,10 @@ import {
     Timestamp,
     Title,
     Url,
-} from ".."
+} from "../../nodes"
 import { useEffect, useState } from "react"
-import { renderMessage } from "../src/renderMessage"
-import { Container } from "../src/types"
+import { renderMessage } from "../.."
+import { Container } from "../types"
 
 describe("Hooks", () => {
     test("useState hook", (done) => {

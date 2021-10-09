@@ -1,5 +1,5 @@
-import { renderMessage } from "../src/renderMessage"
-import { Container } from "../src/types"
+import { renderMessage } from "../.."
+import { Container } from "../types"
 import {
     Author,
     Br,
@@ -21,7 +21,7 @@ import {
     Timestamp,
     Title,
     Url,
-} from "../src/nodes"
+} from "../../nodes"
 
 describe("renders message", () => {
     it("creates empty message", () => {

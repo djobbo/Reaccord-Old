@@ -20,9 +20,9 @@ import {
     LinkButtonProps,
     SelectProps,
     OptionProps,
-} from "./types"
+} from "./props"
 export * from "./nodes"
-export * from "./types"
+export * from "./props"
 
 export type ReaccordNodeComponent<Props> = FC<Props>
 

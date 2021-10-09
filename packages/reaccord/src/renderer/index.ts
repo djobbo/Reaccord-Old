@@ -1,10 +1,8 @@
 import { Client } from "discord.js"
 import { ReactNode } from "react"
 import ReactReconciler from "react-reconciler"
-import { getHostConfig } from "./getHostConfig"
-import { Container, NotifyFunction } from "./types"
-
-const hostConfig = getHostConfig()
+import { hostConfig } from "./hostConfig"
+import { Container, NotifyFunction } from "./hostConfig/types"
 
 const reconciler = ReactReconciler(hostConfig as any) // TODO: Fix type
 

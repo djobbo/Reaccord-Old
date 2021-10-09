@@ -1,5 +1,4 @@
-import { Client, Interaction } from "discord.js"
-
+import { Interaction } from "discord.js"
 import {
     AuthorProps,
     BrProps,
@@ -19,28 +18,12 @@ import {
     TimestampProps,
     TitleProps,
     UrlProps,
-} from "./nodes"
-
+} from "../nodes"
 import {
     APIButtonComponent,
     APISelectMenuComponent,
     APISelectMenuOption,
 } from "discord-api-types/v9"
-
-export interface MessageContent {
-    embeds: unknown[]
-    components: unknown[]
-    text: { content: string }
-}
-
-export type NotifyFunction = (message: MessageContent) => Promise<void>
-
-export interface Container {
-    client?: Client | null
-    notify?: NotifyFunction
-    content: MessageContent
-    maxAge?: number
-}
 
 type PropsWithType<
     Type extends IntrinsicElement = IntrinsicElement,
