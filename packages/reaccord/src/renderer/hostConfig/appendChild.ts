@@ -11,12 +11,14 @@ export const appendChild = (
         case "Title":
             if (parentInstance.type !== "Embed")
                 throw new Error("Found <Title/> node outside of <Embed/>")
+
             parentInstance.embed.title = parseTextNode(child.children)
             break
 
         case "Field":
             if (parentInstance.type !== "Embed")
                 throw new Error("Found <Field/> node outside of <Embed/>")
+
             if (!parentInstance.embed.fields) parentInstance.embed.fields = []
             parentInstance.embed.fields.push({
                 name: parseTextNode(child.title),
