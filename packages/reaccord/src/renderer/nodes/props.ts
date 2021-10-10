@@ -1,6 +1,7 @@
 import { ReactNode } from "react"
 import { APIMessageComponentEmoji } from "discord-api-types/v9"
 import { ButtonInteraction, SelectMenuInteraction } from "discord.js"
+import { Color, ColorHex, ColorRGB } from "../lib/resolveColor"
 
 // Embed Nodes
 export interface EmbedProps {
@@ -14,7 +15,9 @@ export interface AuthorProps {
 }
 
 export interface ColorProps {
-    hex: string
+    color?: Color
+    hex?: ColorHex
+    rgb?: ColorRGB
 }
 
 export interface DescProps {

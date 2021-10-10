@@ -21,6 +21,7 @@ import {
 } from "../nodes"
 import {
     APIButtonComponent,
+    APIEmbed,
     APISelectMenuComponent,
     APISelectMenuOption,
 } from "discord-api-types/v9"
@@ -86,10 +87,7 @@ export type TextContentInstance =
 type EmbedInstance = PropsWithType<
     "Embed",
     {
-        embed: {
-            title?: string
-            fields?: { name: string; value: string }[]
-        }
+        embed: APIEmbed
     }
 >
 type InteractionRowInstance = PropsWithType<

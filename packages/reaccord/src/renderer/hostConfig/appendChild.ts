@@ -2,17 +2,39 @@ import { ComponentType } from "discord-api-types"
 import { getButtonStyle } from "../lib"
 import { ParentInstance, ChildInstance } from "./instances"
 import { parseTextNode } from "../lib"
+import { resolveColor } from "../lib/resolveColor"
 
 export const appendChild = (
     parentInstance: ParentInstance,
     child: ChildInstance,
 ) => {
     switch (child.type) {
-        case "Title":
+        // Embed Nodes
+        case "Author":
             if (parentInstance.type !== "Embed")
-                throw new Error("Found <Title/> node outside of <Embed/>")
+                throw new Error("Found <Author/> node outside of <Embed/>")
 
-            parentInstance.embed.title = parseTextNode(child.children)
+            parentInstance.embed.author = {
+                name: parseTextNode(child.children),
+                icon_url: child.iconURL,
+                url: child.url,
+            }
+            break
+
+        case "Color":
+            if (parentInstance.type !== "Embed")
+                throw new Error("Found <Color/> node outside of <Embed/>")
+
+            parentInstance.embed.color = resolveColor(
+                child.color ?? child.hex ?? child.rgb ?? 0,
+            )
+            break
+
+        case "Desc":
+            if (parentInstance.type !== "Embed")
+                throw new Error("Found <Desc/> node outside of <Embed/>")
+
+            parentInstance.embed.description = parseTextNode(child.children)
             break
 
         case "Field":
@@ -26,6 +48,24 @@ export const appendChild = (
             })
             break
 
+        case "Footer":
+            if (parentInstance.type !== "Embed")
+                throw new Error("Found <Footer/> node outside of <Embed/>")
+
+            parentInstance.embed.footer = {
+                text: parseTextNode(child.children),
+                icon_url: child.iconUrl,
+            }
+            break
+
+        case "Title":
+            if (parentInstance.type !== "Embed")
+                throw new Error("Found <Title/> node outside of <Embed/>")
+
+            parentInstance.embed.title = parseTextNode(child.children)
+            break
+
+        // MessageComponents
         case "Button":
             if (parentInstance.type !== "InteractionRow")
                 throw new Error(

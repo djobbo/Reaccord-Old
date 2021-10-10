@@ -39,7 +39,15 @@ export const createInstance = <Type extends IntrinsicElement>(
 
         case "Button": {
             const buttonProps = props as NodeProps["Button"]
+
+            if (!rootContainer.messageId)
+                return {
+                    type,
+                    ...buttonProps,
+                }
+
             const listener = getButtonListener(
+                rootContainer.messageId,
                 buttonProps.customId,
                 buttonProps.onClick,
             )
@@ -55,8 +63,16 @@ export const createInstance = <Type extends IntrinsicElement>(
         case "Select": {
             const selectProps = props as NodeProps["Select"]
 
+            if (!rootContainer.messageId)
+                return {
+                    type,
+                    options: [],
+                    ...selectProps,
+                }
+
             const listener = selectProps.single
                 ? getSingleSelectListener(
+                      rootContainer.messageId,
                       selectProps.customId,
                       selectProps.onChange,
                   )

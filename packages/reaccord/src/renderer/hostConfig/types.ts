@@ -1,4 +1,4 @@
-import { Client } from "discord.js"
+import { Channel, Client } from "discord.js"
 
 export interface HostContest {}
 
@@ -12,7 +12,8 @@ export type NotifyFunction = (message: MessageContent) => Promise<void>
 
 export interface Container {
     client?: Client | null
-    notify?: NotifyFunction
+    onUpdate?: NotifyFunction
     content: MessageContent
     maxAge?: number
+    messageId?: string
 }

@@ -2,6 +2,7 @@ import { sendMessage } from "reaccord"
 import { Counter } from "./Counter"
 import { Client, Intents } from "discord.js"
 import { config as loadEnv } from "dotenv"
+import { Post } from "./Post"
 
 loadEnv()
 
@@ -16,9 +17,15 @@ const client = new Client({
 client.on("messageCreate", async ({ author, content, channel }) => {
     if (author.bot) return
 
-    if (content !== "..") return
+    if (content === "..") {
+        sendMessage(<Counter />, channel, client)
+        return
+    }
 
-    sendMessage(<Counter />, channel, client, 10 * 1000)
+    if (content === "--") {
+        sendMessage(<Post />, channel, client)
+        return
+    }
 })
 
 client.on("ready", () =>

@@ -19,6 +19,8 @@ export const parseTextNode = (el: ReactNode): string => {
             return `[${parseTextNode(el.props.children)}](${parseTextNode(
                 el.props.href,
             )})`
+        case "Br":
+            return `\n`
         default:
             return parseTextNode(el.props?.children ?? "")
     }

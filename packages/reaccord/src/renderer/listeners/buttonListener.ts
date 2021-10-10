@@ -1,9 +1,14 @@
 import { ButtonInteraction, Interaction } from "discord.js"
 
 export const getButtonListener =
-    (customId: string, onClick?: (interaction: ButtonInteraction) => void) =>
+    (
+        messageId: string,
+        customId: string,
+        onClick?: (interaction: ButtonInteraction) => void,
+    ) =>
     (interaction: Interaction) => {
         if (!interaction.isButton()) return
+        if (interaction.message.id !== messageId) return
         if (interaction.customId !== customId) return
         onClick?.(interaction)
         interaction.deferUpdate()

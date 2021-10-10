@@ -9,6 +9,7 @@ import {
 } from "../listeners"
 import { parseTextNode } from "../lib"
 import { Container } from "./types"
+import { resolveColor } from "../lib/resolveColor"
 
 export const prepareUpdate = (
     instance: Instance,
@@ -34,6 +35,27 @@ export const prepareUpdate = (
                                 "title",
                                 parseTextNode(child.props.children),
                             ]
+                        case "Color":
+                            return [
+                                "color",
+                                resolveColor(
+                                    child.props.color ??
+                                        child.props.hex ??
+                                        child.props.rgb ??
+                                        0,
+                                ),
+                            ]
+                        case "Author":
+                            return [
+                                "author",
+                                {
+                                    name: parseTextNode(child.props.children),
+                                    icon_url: child.props.iconURL,
+                                    url: child.props.url,
+                                },
+                            ]
+                        case "Field":
+                            return null
                         default:
                             return null
                     }
@@ -90,13 +112,21 @@ export const prepareUpdate = (
                     "interactionCreate",
                     instance.listener,
                 )
-            instance.listener = newProps.single
-                ? getSingleSelectListener(newProps.customId, newProps.onChange)
-                : getMultipleSelectListener(
-                      newProps.customId,
-                      newProps.onChange,
-                  )
-            rootContainer.client?.on("interactionCreate", instance.listener)
+
+            if (rootContainer.messageId) {
+                instance.listener = newProps.single
+                    ? getSingleSelectListener(
+                          rootContainer.messageId,
+                          newProps.customId,
+                          newProps.onChange,
+                      )
+                    : getMultipleSelectListener(
+                          newProps.customId,
+                          newProps.onChange,
+                      )
+                rootContainer.client?.on("interactionCreate", instance.listener)
+            }
+
             return (
                 Array.isArray(newProps.children)
                     ? newProps.children
@@ -123,11 +153,15 @@ export const prepareUpdate = (
                     "interactionCreate",
                     instance.listener,
                 )
-            instance.listener = getButtonListener(
-                newProps.customId,
-                newProps.onClick,
-            )
-            rootContainer.client?.on("interactionCreate", instance.listener)
+
+            if (rootContainer.messageId) {
+                instance.listener = getButtonListener(
+                    rootContainer.messageId,
+                    newProps.customId,
+                    newProps.onClick,
+                )
+                rootContainer.client?.on("interactionCreate", instance.listener)
+            }
             return
         default:
             return
