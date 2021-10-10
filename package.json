@@ -12,7 +12,9 @@
         "dev": "lerna run dev --parallel",
         "test": "lerna run test",
         "test:w": "lerna run test:w --parallel",
-        "build": "lerna run build"
+        "build": "lerna run build",
+        "postinstall": "yarn build",
+        "example": "lerna run start --scope example --stream"
     },
     "devDependencies": {
         "lerna": "^4.0.0"
