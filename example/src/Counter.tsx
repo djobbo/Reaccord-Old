@@ -9,6 +9,7 @@ import {
     LinkButton,
     Select,
     Option,
+    Color,
 } from "reaccord"
 
 export const Counter = () => {
@@ -22,6 +23,7 @@ export const Counter = () => {
             </Text> */}
             <Embed>
                 <Title>Count: {count}</Title>
+                <Color color="RANDOM" />
             </Embed>
             <ActionRow>
                 <Button
