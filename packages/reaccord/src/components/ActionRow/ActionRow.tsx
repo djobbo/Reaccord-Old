@@ -1,23 +1,13 @@
-import { APIActionRowComponent } from "discord-api-types"
-import { MessageActionRow, MessageEmbed } from "discord.js"
-import {
-    createContext,
-    Dispatch,
-    ReactNode,
-    SetStateAction,
-    useContext,
-    useState,
-} from "react"
+import { MessageActionRow } from "discord.js"
+import { createContext, ReactNode, useContext, useRef, useState } from "react"
 import { ActionRowWrapper } from "../../renderer/nodes"
 
 interface ActionRowContext {
     actionRow: MessageActionRow
-    setActionRow: Dispatch<SetStateAction<MessageActionRow>>
 }
 
 const actionRowContext = createContext<ActionRowContext>({
     actionRow: new MessageActionRow(),
-    setActionRow: () => {},
 })
 
 export const useActionRow = () => useContext(actionRowContext)
@@ -27,11 +17,15 @@ interface Props {
 }
 
 export const ActionRow = ({ children }: Props) => {
-    const [actionRow, setActionRow] = useState(new MessageActionRow())
+    const actionRowRef = useRef<{ actionRow: MessageActionRow }>({
+        actionRow: new MessageActionRow(),
+    })
 
     return (
-        <actionRowContext.Provider value={{ actionRow, setActionRow }}>
-            <ActionRowWrapper actionRow={actionRow} />
+        <actionRowContext.Provider
+            value={{ actionRow: actionRowRef.current.actionRow }}
+        >
+            <ActionRowWrapper actionRow={actionRowRef.current.actionRow} />
             {children}
         </actionRowContext.Provider>
     )

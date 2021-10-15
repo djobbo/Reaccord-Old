@@ -1,22 +1,13 @@
 import { MessageEmbed } from "discord.js"
-import {
-    createContext,
-    Dispatch,
-    ReactNode,
-    SetStateAction,
-    useContext,
-    useState,
-} from "react"
+import { createContext, ReactNode, useContext, useRef, useState } from "react"
 import { EmbedWrapper } from "../../renderer/nodes"
 
 interface EmbedContext {
     embed: MessageEmbed
-    setEmbed: Dispatch<SetStateAction<MessageEmbed>>
 }
 
 const embedContext = createContext<EmbedContext>({
     embed: new MessageEmbed(),
-    setEmbed: () => {},
 })
 
 export const useEmbed = () => useContext(embedContext)
@@ -26,11 +17,13 @@ interface Props {
 }
 
 export const Embed = ({ children }: Props) => {
-    const [embed, setEmbed] = useState(new MessageEmbed())
+    const embedRef = useRef<{ embed: MessageEmbed }>({
+        embed: new MessageEmbed(),
+    })
 
     return (
-        <embedContext.Provider value={{ embed, setEmbed }}>
-            <EmbedWrapper embed={embed} />
+        <embedContext.Provider value={{ embed: embedRef.current.embed }}>
+            <EmbedWrapper embed={embedRef.current.embed} />
             {children}
         </embedContext.Provider>
     )

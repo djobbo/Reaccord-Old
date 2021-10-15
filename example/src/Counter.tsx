@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import {
-    Text,
-    Span,
     Embed,
     Title,
     ActionRow,
@@ -18,9 +16,6 @@ export const Counter = () => {
 
     return (
         <>
-            {/* <Text>
-                Count: <Span bold>{count}</Span>
-            </Text> */}
             <Embed>
                 <Title>Count: {count}</Title>
                 <Color color="RANDOM" />
@@ -46,7 +41,7 @@ export const Counter = () => {
                 >
                     {increment}
                 </Button>
-                <LinkButton href="https://dvmm.dev">dvmm.dev{count}</LinkButton>
+                <LinkButton href="https://dvmm.dev">dvmm.dev</LinkButton>
             </ActionRow>
             <ActionRow>
                 <Select
