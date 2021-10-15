@@ -1,27 +1,6 @@
-import { renderMessage } from "../.."
-import { Container } from "../types"
-import {
-    Author,
-    Br,
-    Button,
-    Code,
-    Color,
-    Desc,
-    Embed,
-    Field,
-    Footer,
-    Image,
-    Link,
-    LinkButton,
-    Option,
-    InteractionRow,
-    Select,
-    Span,
-    Text,
-    Timestamp,
-    Title,
-    Url,
-} from "../../nodes"
+import { renderMessage } from ".."
+import { Container } from "../hostConfig"
+import { Text } from "../nodes"
 
 describe("renders message", () => {
     it("creates empty message", () => {
@@ -29,7 +8,7 @@ describe("renders message", () => {
 
         const mockUpdateFn = jest.fn()
 
-        renderMessage(<></>, null, mockUpdateFn)
+        renderMessage(<></>, { onUpdate: mockUpdateFn })
 
         expect(mockUpdateFn).toHaveBeenCalledTimes(1)
 
@@ -68,7 +47,7 @@ describe("renders message", () => {
     //     expect(() =>
     //         renderMessage(<Option value="value">name</Option>),
     //     ).toThrow()
-    //     expect(() => renderMessage(<InteractionRow></InteractionRow>)).toThrow()
+    //     expect(() => renderMessage(<ActionRow></ActionRow>)).toThrow()
     //     expect(() =>
     //         renderMessage(
     //             <Select customId="select" placeholder="hellow"></Select>,
@@ -88,11 +67,11 @@ describe("renders message", () => {
 
 describe("renders text message", () => {
     it("creates text message", () => {
-        expect(() => renderMessage(<Text></Text>)).not.toThrow()
+        expect(() => renderMessage(<Text>s</Text>)).not.toThrow()
 
         const mockUpdateFn = jest.fn()
 
-        renderMessage(<Text>qwerty</Text>, null, mockUpdateFn)
+        renderMessage(<Text>qwerty</Text>, { onUpdate: mockUpdateFn })
 
         expect(mockUpdateFn).toHaveBeenCalledTimes(1)
         expect(mockUpdateFn).toHaveBeenCalledWith<[Container["content"]]>({

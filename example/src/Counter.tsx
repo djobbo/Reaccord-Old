@@ -1,12 +1,13 @@
 import { useState } from "react"
 import {
-    Text,
-    InteractionRow,
+    Embed,
+    Title,
+    ActionRow,
     Button,
     LinkButton,
     Select,
     Option,
-    Span,
+    Color,
 } from "reaccord"
 
 export const Counter = () => {
@@ -15,16 +16,17 @@ export const Counter = () => {
 
     return (
         <>
-            <Text>
-                Count: <Span bold>{count}</Span>
-            </Text>
-            <InteractionRow>
+            <Embed>
+                <Title>Count: {count}</Title>
+                <Color color="RANDOM" />
+            </Embed>
+            <ActionRow>
                 <Button
                     emoji={{ name: "➕" }}
                     onClick={() => {
                         setCount((count) => count + increment)
                     }}
-                    style="Primary"
+                    style="PRIMARY"
                     customId="plusbtn"
                 >
                     {increment}
@@ -34,32 +36,34 @@ export const Counter = () => {
                     onClick={() => {
                         setCount((count) => count - increment)
                     }}
-                    style="Secondary"
+                    style="SECONDARY"
                     customId="minusbtn"
                 >
                     {increment}
                 </Button>
                 <LinkButton href="https://dvmm.dev">dvmm.dev</LinkButton>
-            </InteractionRow>
-            <Select
-                customId="myselect"
-                placeholder=""
-                onChange={(value) => {
-                    setIncrement(parseInt(value))
-                }}
-                single
-            >
-                {[1, 10, 100, 1000].map((val) => (
-                    <Option
-                        value={val.toString()}
-                        selected={increment === val}
-                        description={<>Set increment to {val}</>}
-                        key={val}
-                    >
-                        {val}
-                    </Option>
-                ))}
-            </Select>
+            </ActionRow>
+            <ActionRow>
+                <Select
+                    customId="myselect"
+                    placeholder=""
+                    onChange={(value) => {
+                        setIncrement(parseInt(value))
+                    }}
+                    single
+                >
+                    {[1, 10, 100, 1000].map((val) => (
+                        <Option
+                            value={val.toString()}
+                            selected={increment === val}
+                            description={<>Set increment to {val}</>}
+                            key={val}
+                        >
+                            {val}
+                        </Option>
+                    ))}
+                </Select>
+            </ActionRow>
         </>
     )
 }

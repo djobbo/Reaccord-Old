@@ -1,4 +1,4 @@
-import { Link, Span } from "../nodes"
+import { Link, Span } from "../renderer/nodes"
 import { parseTextNode } from "."
 
 describe("renders text message", () => {

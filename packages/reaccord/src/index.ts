@@ -1,3 +1,6 @@
 export { renderMessage } from "./renderer"
 export { sendMessage } from "./realtime"
-export * from "./renderer/nodes"
+
+export { Text, Span, Br, Code, Link } from "./renderer/nodes"
+
+export * from "./components"
