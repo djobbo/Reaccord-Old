@@ -7,6 +7,8 @@ import {
     ActionRow,
     Button,
     LinkButton,
+    Select,
+    Option,
 } from "reaccord"
 
 export const Counter = () => {
@@ -28,7 +30,7 @@ export const Counter = () => {
             </Embed>
             <ActionRow>
                 <Button
-                    emoji="➕"
+                    emoji={{ name: "➕" }}
                     onClick={() => {
                         setCount((count) => count + increment)
                     }}
@@ -38,7 +40,7 @@ export const Counter = () => {
                     {increment}
                 </Button>
                 <Button
-                    emoji="➖"
+                    emoji={{ name: "➖" }}
                     onClick={() => {
                         setCount((count) => count - increment)
                     }}
@@ -49,25 +51,27 @@ export const Counter = () => {
                 </Button>
                 <LinkButton href="https://dvmm.dev">dvmm.dev{count}</LinkButton>
             </ActionRow>
-            {/* <Select
-                customId="myselect"
-                placeholder=""
-                onChange={(value) => {
-                    setIncrement(parseInt(value))
-                }}
-                single
-            >
-                {[1, 10, 100, 1000].map((val) => (
-                    <Option
-                        value={val.toString()}
-                        selected={increment === val}
-                        description={<>Set increment to {val}</>}
-                        key={val}
-                    >
-                        {val}
-                    </Option>
-                ))}
-            </Select> */}
+            <ActionRow>
+                <Select
+                    customId="myselect"
+                    placeholder=""
+                    onChange={(value) => {
+                        setIncrement(parseInt(value))
+                    }}
+                    single
+                >
+                    {[1, 10, 100, 1000].map((val) => (
+                        <Option
+                            value={val.toString()}
+                            selected={increment === val}
+                            description={<>Set increment to {val}</>}
+                            key={val}
+                        >
+                            {val}
+                        </Option>
+                    ))}
+                </Select>
+            </ActionRow>
         </>
     )
 }

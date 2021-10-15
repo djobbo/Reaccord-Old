@@ -2,17 +2,17 @@ import { ReactNode, useEffect, useRef } from "react"
 import { useActionRow } from "./ActionRow"
 import {
     ButtonInteraction,
-    EmojiIdentifierResolvable,
     MessageButton,
     MessageButtonStyleResolvable,
 } from "discord.js"
 import { parseTextNode } from "../../lib"
 import { useMessage } from "../../provider/MessageProvider"
 import { getButtonListener } from "../../listeners"
+import { APIPartialEmoji } from "discord-api-types"
 
 export interface PropsBase {
     children?: ReactNode
-    emoji?: EmojiIdentifierResolvable
+    emoji?: Partial<APIPartialEmoji>
     disabled?: boolean
 }
 
@@ -48,20 +48,27 @@ export const Button = ({
         .setDisabled(disabled)
         .setLabel(parseTextNode(children))
 
-    if (style) buttonRef.current.button.setStyle(style)
+    buttonRef.current.button.setStyle(style ?? "SECONDARY")
 
-    if (emoji) buttonRef.current.button.setEmoji(emoji)
+    buttonRef.current.button.emoji = emoji
+        ? {
+              id: emoji.id ?? null,
+              name: emoji.name ?? null,
+              animated: emoji.animated,
+          }
+        : null
 
     useEffect(() => {
         if (!messageId || !client) return
 
         const listener = getButtonListener(messageId, customId, onClick)
+
         client.on("interactionCreate", listener)
 
         return () => {
             client.removeListener("interactionCreate", listener)
         }
-    }, [])
+    }, [onClick])
 
     return null
 }
@@ -86,7 +93,13 @@ export const LinkButton = ({
         .setStyle("LINK")
         .setURL(href)
 
-    if (emoji) buttonRef.current.button.setEmoji(emoji)
+    buttonRef.current.button.emoji = emoji
+        ? {
+              id: emoji.id ?? null,
+              name: emoji.name ?? null,
+              animated: emoji.animated,
+          }
+        : null
 
     return null
 }

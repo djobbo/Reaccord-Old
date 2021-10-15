@@ -20,6 +20,7 @@ export const getSingleSelectListener =
 
 export const getMultipleSelectListener =
     (
+        messageId: string,
         customId: string,
         onChange?: (
             value: string[],
@@ -28,6 +29,7 @@ export const getMultipleSelectListener =
     ) =>
     (interaction: Interaction) => {
         if (!interaction.isSelectMenu()) return
+        if (interaction.message.id !== messageId) return
         if (interaction.customId !== customId) return
 
         onChange?.(interaction.values, interaction)
