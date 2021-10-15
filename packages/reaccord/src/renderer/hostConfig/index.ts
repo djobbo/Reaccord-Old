@@ -1,4 +1,3 @@
-import { appendChild } from "./appendChild"
 import { appendChildToContainer } from "./appendChildToContainer"
 import { clearContainer } from "./clearContainer"
 import { commitUpdate } from "./commitUpdate"
@@ -24,8 +23,6 @@ export const hostConfig = {
     createTextInstance,
     clearContainer,
     finalizeInitialChildren,
-    appendInitialChild: appendChild,
-    appendChild,
     appendChildToContainer,
     removeChildFromContainer,
     prepareUpdate,

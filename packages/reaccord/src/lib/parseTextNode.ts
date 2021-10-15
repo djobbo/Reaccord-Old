@@ -1,5 +1,5 @@
 import { ReactNode } from "react"
-import { hasOwnProperty } from "../../util/hasOwnProperty"
+import { hasOwnProperty } from "../util/hasOwnProperty"
 
 export const parseTextNode = (el: ReactNode): string => {
     if (typeof el === "undefined" || el === null) return ""
@@ -21,6 +21,10 @@ export const parseTextNode = (el: ReactNode): string => {
             )})`
         case "Br":
             return `\n`
+        case "Code":
+            return `\`\`\`${el.props.lang}\n${parseTextNode(
+                el.props.children,
+            )}\n\`\`\``
         default:
             return parseTextNode(el.props?.children ?? "")
     }

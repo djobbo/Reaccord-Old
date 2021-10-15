@@ -1,4 +1,4 @@
-import { Button, InteractionRow } from "reaccord"
+import { Button, ActionRow } from "reaccord"
 import { Dispatch, SetStateAction } from "react"
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
 }
 
 export const Navigation = ({ page, setPage }: Props) => (
-    <InteractionRow>
+    <ActionRow>
         <Button
             customId="firstPage"
             onClick={() => {
@@ -51,5 +51,5 @@ export const Navigation = ({ page, setPage }: Props) => (
         >
             {">>"}
         </Button>
-    </InteractionRow>
+    </ActionRow>
 )

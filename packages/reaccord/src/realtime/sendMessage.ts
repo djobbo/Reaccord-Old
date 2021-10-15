@@ -1,4 +1,4 @@
-import { Client, Message, MessageOptions, TextBasedChannels } from "discord.js"
+import { Client, MessageOptions, TextBasedChannels } from "discord.js"
 import { ReactNode } from "react"
 import { renderMessage } from "../renderer"
 
@@ -15,11 +15,8 @@ export const sendMessage = async (
         onUpdate: async (message) => {
             const content: MessageOptions = {
                 content: message.text.content || undefined,
-                embeds: message.embeds as any,
-                components: message.components.map((row) => ({
-                    type: "ACTION_ROW",
-                    components: row as any,
-                })),
+                embeds: message.embeds,
+                components: message.components,
             }
 
             if (msg) msg.edit(content)

@@ -14,7 +14,7 @@ import {
     Link,
     LinkButton,
     Option,
-    InteractionRow,
+    ActionRow,
     Select,
     Span,
     Text,
@@ -68,7 +68,7 @@ describe("renders message", () => {
     //     expect(() =>
     //         renderMessage(<Option value="value">name</Option>),
     //     ).toThrow()
-    //     expect(() => renderMessage(<InteractionRow></InteractionRow>)).toThrow()
+    //     expect(() => renderMessage(<ActionRow></ActionRow>)).toThrow()
     //     expect(() =>
     //         renderMessage(
     //             <Select customId="select" placeholder="hellow"></Select>,

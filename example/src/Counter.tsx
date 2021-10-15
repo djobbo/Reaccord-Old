@@ -1,47 +1,55 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
     Text,
-    InteractionRow,
+    Span,
+    Embed,
+    Title,
+    ActionRow,
     Button,
     LinkButton,
-    Select,
-    Option,
-    Span,
 } from "reaccord"
 
 export const Counter = () => {
     const [increment, setIncrement] = useState(1)
     const [count, setCount] = useState(0)
 
+    useEffect(() => {
+        const t = setTimeout(() => setCount(10), 500)
+        return () => clearTimeout(t)
+    }, [])
+
     return (
         <>
             <Text>
                 Count: <Span bold>{count}</Span>
             </Text>
-            <InteractionRow>
+            <Embed>
+                <Title>{count}</Title>
+            </Embed>
+            <ActionRow>
                 <Button
-                    emoji={{ name: "➕" }}
+                    emoji="➕"
                     onClick={() => {
                         setCount((count) => count + increment)
                     }}
-                    style="Primary"
+                    style="PRIMARY"
                     customId="plusbtn"
                 >
                     {increment}
                 </Button>
                 <Button
-                    emoji={{ name: "➖" }}
+                    emoji="➖"
                     onClick={() => {
                         setCount((count) => count - increment)
                     }}
-                    style="Secondary"
+                    style="SECONDARY"
                     customId="minusbtn"
                 >
                     {increment}
                 </Button>
-                <LinkButton href="https://dvmm.dev">dvmm.dev</LinkButton>
-            </InteractionRow>
-            <Select
+                <LinkButton href="https://dvmm.dev">dvmm.dev{count}</LinkButton>
+            </ActionRow>
+            {/* <Select
                 customId="myselect"
                 placeholder=""
                 onChange={(value) => {
@@ -59,7 +67,7 @@ export const Counter = () => {
                         {val}
                     </Option>
                 ))}
-            </Select>
+            </Select> */}
         </>
     )
 }

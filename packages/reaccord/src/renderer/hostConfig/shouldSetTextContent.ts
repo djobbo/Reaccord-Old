@@ -1,13 +1,3 @@
-import { IntrinsicElement } from "../nodes"
+import { IntrinsicElement } from "./instances"
 
-const textContainers: IntrinsicElement[] = [
-    "Text",
-    "Title",
-    "Field",
-    "Button",
-    "LinkButton",
-    "Option",
-]
-
-export const shouldSetTextContent = (type: IntrinsicElement) =>
-    textContainers.includes(type)
+export const shouldSetTextContent = (type: IntrinsicElement) => type === "Text"

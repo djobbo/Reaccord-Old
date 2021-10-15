@@ -1,10 +1,10 @@
-import { Channel, Client } from "discord.js"
+import { Client, MessageActionRow, MessageEmbed } from "discord.js"
 
 export interface HostContest {}
 
 export interface MessageContent {
-    embeds: unknown[]
-    components: unknown[]
+    embeds: MessageEmbed[]
+    components: MessageActionRow[]
     text: { content: string }
 }
 
