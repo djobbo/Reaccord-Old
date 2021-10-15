@@ -7,6 +7,8 @@ import {
     MessageButtonStyleResolvable,
 } from "discord.js"
 import { parseTextNode } from "../../lib"
+import { useMessage } from "../../provider/MessageProvider"
+import { getButtonListener } from "../../listeners"
 
 export interface PropsBase {
     children?: ReactNode
@@ -33,6 +35,7 @@ export const Button = ({
     style,
 }: ButtonProps) => {
     const buttonRef = useRef<{ button: MessageButton | null }>({ button: null })
+    const { messageId, client } = useMessage()
     const { actionRow } = useActionRow()
 
     if (!buttonRef.current.button) {
@@ -50,9 +53,13 @@ export const Button = ({
     if (emoji) buttonRef.current.button.setEmoji(emoji)
 
     useEffect(() => {
-        //TODO: Do smth with onClick
+        if (!messageId || !client) return
+
+        const listener = getButtonListener(messageId, customId, onClick)
+        client.on("interactionCreate", listener)
+
         return () => {
-            // Clear onClick
+            client.removeListener("interactionCreate", listener)
         }
     }, [])
 
