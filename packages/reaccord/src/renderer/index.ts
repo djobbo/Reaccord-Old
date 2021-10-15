@@ -1,8 +1,8 @@
-import { Channel, Client } from "discord.js"
+import { Client } from "discord.js"
 import { ReactNode } from "react"
 import ReactReconciler from "react-reconciler"
 import { hostConfig } from "./hostConfig"
-import { Container, NotifyFunction } from "./hostConfig/types"
+import { Container, NotifyFunction } from "./hostConfig"
 
 const reconciler = ReactReconciler(hostConfig as any) // TODO: Fix type
 
@@ -13,7 +13,10 @@ interface Options {
     messageId?: string
 }
 
-export const renderMessage = (messageElement: ReactNode, options: Options) => {
+export const renderMessage = (
+    messageElement: ReactNode,
+    options: Options = {},
+) => {
     let container: Container = {
         content: { embeds: [], components: [], text: { content: "" } },
         ...options,

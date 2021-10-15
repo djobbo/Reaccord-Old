@@ -1,28 +1,7 @@
-import {
-    Author,
-    Br,
-    Button,
-    Code,
-    Color,
-    Desc,
-    Embed,
-    Field,
-    Footer,
-    Image,
-    Link,
-    LinkButton,
-    Option,
-    ActionRow,
-    Select,
-    Span,
-    Text,
-    Timestamp,
-    Title,
-    Url,
-} from "../../nodes"
+import { Text } from "../.."
 import { useEffect, useState } from "react"
-import { renderMessage } from "../.."
-import { Container } from "../types"
+import { renderMessage } from ".."
+import { Container } from "../hostConfig"
 
 describe("Hooks", () => {
     test("useState hook", (done) => {
@@ -42,7 +21,7 @@ describe("Hooks", () => {
         }
 
         expect(() =>
-            renderMessage(<TestMessage />, null, mockUpdateFn),
+            renderMessage(<TestMessage />, { onUpdate: mockUpdateFn }),
         ).not.toThrow()
     })
 
@@ -63,7 +42,7 @@ describe("Hooks", () => {
             return <Text>initial</Text>
         }
 
-        expect(() => renderMessage(<TestMessage />)).not.toThrow()
+        expect(() => renderMessage(<TestMessage />, {})).not.toThrow()
     })
 
     it("useState + useEffect hooks", (done) => {
@@ -98,7 +77,7 @@ describe("Hooks", () => {
         }
 
         expect(() =>
-            renderMessage(<TestMessage />, null, mockUpdateFn),
+            renderMessage(<TestMessage />, { onUpdate: mockUpdateFn }),
         ).not.toThrow()
     })
 

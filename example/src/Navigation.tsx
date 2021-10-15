@@ -14,7 +14,7 @@ export const Navigation = ({ page, setPage }: Props) => (
                 setPage(1)
             }}
             disabled={page <= 1}
-            style="Secondary"
+            style="SECONDARY"
         >
             {"<<"}
         </Button>
@@ -24,11 +24,11 @@ export const Navigation = ({ page, setPage }: Props) => (
                 setPage((page) => page - 1)
             }}
             disabled={page <= 1}
-            style="Primary"
+            style="PRIMARY"
         >
             {"<"}
         </Button>
-        <Button customId="current" disabled>
+        <Button customId="current" disabled style="SUCCESS">
             Page {page}
         </Button>
         <Button
@@ -37,7 +37,7 @@ export const Navigation = ({ page, setPage }: Props) => (
                 setPage((page) => page + 1)
             }}
             disabled={page >= 100}
-            style="Primary"
+            style="PRIMARY"
         >
             {">"}
         </Button>
@@ -47,7 +47,7 @@ export const Navigation = ({ page, setPage }: Props) => (
                 setPage(100)
             }}
             disabled={page >= 100}
-            style="Secondary"
+            style="SECONDARY"
         >
             {">>"}
         </Button>

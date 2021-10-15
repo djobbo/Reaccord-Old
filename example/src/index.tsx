@@ -2,7 +2,7 @@ import { sendMessage } from "reaccord"
 import { Counter } from "./Counter"
 import { Client, Intents } from "discord.js"
 import { config as loadEnv } from "dotenv"
-// import { Post } from "./Post"
+import { Post } from "./Post"
 
 loadEnv()
 
@@ -22,10 +22,10 @@ client.on("messageCreate", async ({ author, content, channel }) => {
         return
     }
 
-    // if (content === "--") {
-    //     sendMessage(<Post />, channel, client)
-    //     return
-    // }
+    if (content === "--") {
+        sendMessage(<Post />, channel, client)
+        return
+    }
 })
 
 client.on("ready", () =>

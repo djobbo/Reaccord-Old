@@ -15,18 +15,13 @@ export const Counter = () => {
     const [increment, setIncrement] = useState(1)
     const [count, setCount] = useState(0)
 
-    useEffect(() => {
-        const t = setTimeout(() => setCount(10), 500)
-        return () => clearTimeout(t)
-    }, [])
-
     return (
         <>
-            <Text>
+            {/* <Text>
                 Count: <Span bold>{count}</Span>
-            </Text>
+            </Text> */}
             <Embed>
-                <Title>{count}</Title>
+                <Title>Count: {count}</Title>
             </Embed>
             <ActionRow>
                 <Button
